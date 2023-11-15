@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
+      tableName: "users",
 
       // sequelize /* static init 메서드의 매개변수와 연결되는 옵션으로, db.sequelize 객체를 넣어야 한다. */,
       // timestamps: false /* true : 각각 레코드가 생성, 수정될 때의 시간이 자동으로 입력된다. */,
@@ -34,5 +35,6 @@ module.exports = (sequelize, DataTypes) => {
       // collate: "utf8_general_ci",
     }
   );
+
   return User;
 };

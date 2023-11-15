@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  User.init(
+  shoes.init(
     {
       productId: {
         primaryKey: true,
@@ -40,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Shoes",
+      tableName: "shoes",
     }
   );
-  return User;
+  return shoes;
 };
