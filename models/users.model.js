@@ -15,13 +15,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       userId: {
         primaryKey: true,
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, //type: Sequelize.STRING 사용하면 에러
         allowNull: false,
       },
       password: DataTypes.STRING,
     },
     {
       sequelize,
+      timestamps: true,
       modelName: "User",
       tableName: "users",
 
