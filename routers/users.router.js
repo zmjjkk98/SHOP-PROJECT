@@ -6,9 +6,9 @@ const { Op } = require("sequelize");
 const router = express.Router();
 
 router.post("/signup", async (req, res) => {
-  const { userId, userPassword } = req.body;
+  const { userId, password } = req.body;
 
-  const user = await User.create({ userId, password: userPassword });
+  const user = await User.create({ userId, password: password });
 
   res.status(201).json({ data: user });
 });

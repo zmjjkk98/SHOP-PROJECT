@@ -2,6 +2,11 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 
+//라우터 가져오기
+const userRouter = require("./routers/users.router");
+// const productsRouter = require("./routers/products.router");
+// const authRouter = require("./routers/auth.router");
+
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require("./models");
 const app = express();
@@ -21,6 +26,8 @@ app.use(morgan("dev")); // 로그
 app.use(express.static(path.join(__dirname, "public"))); // 요청시 기본 경로 설정
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
+app.use("/auth", [userRouter]);
+// , productsRouter, authRouter
 
 // 에러 처리 미들웨어
 app.use((err, req, res, next) => {
