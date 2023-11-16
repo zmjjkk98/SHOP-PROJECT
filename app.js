@@ -9,6 +9,7 @@ const userRouter = require("./routers/users.router");
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
 const { sequelize } = require("./models");
+const cookieParser = require("cookie-parser");
 const app = express();
 
 app.set("port", process.env.PORT || 3000);
@@ -26,6 +27,7 @@ app.use(morgan("dev")); // 로그
 app.use(express.static(path.join(__dirname, "public"))); // 요청시 기본 경로 설정
 app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
+app.use(cookieParser());
 app.use("/auth", [userRouter]);
 // , productsRouter, authRouter
 
