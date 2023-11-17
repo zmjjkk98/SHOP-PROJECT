@@ -4,7 +4,7 @@ const morgan = require("morgan");
 
 //라우터 가져오기
 const userRouter = require("./routers/users.router");
-// const productsRouter = require("./routers/products.router");
+const productsRouter = require("./routers/products.router");
 // const authRouter = require("./routers/auth.router");
 
 // index.js에 있는 db.sequelize 객체 모듈을 구조분해로 불러온다.
@@ -15,7 +15,7 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 
 sequelize
-  .sync({ force: false })
+  .sync({ force: false }) //model을 이용해 데이터베이스에 테이블을 삭제 후 생성.
   .then(() => {
     console.log("데이터베이스 연결됨.");
   })
@@ -29,6 +29,7 @@ app.use(express.json()); // json 파싱
 app.use(express.urlencoded({ extended: false })); // uri 파싱
 app.use(cookieParser());
 app.use("/auth", [userRouter]);
+app.use("/api", [productsRouter]);
 // , productsRouter, authRouter
 
 // 에러 처리 미들웨어

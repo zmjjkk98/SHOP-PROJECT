@@ -47,16 +47,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/login", authMiddleWare, async (req, res) => {
-  console.log(req.cookies);
-  res.json({ message: "성공?" });
+  res.json({ message: "로그인 성공" });
 });
-
-//
-
-// router.get("/login", authMiddleWare, async (req, res) => {
-//   console.log("---------------");
-
-//   return res.status(200);
-// });
 
 module.exports = router;
