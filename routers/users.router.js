@@ -39,33 +39,6 @@ router.post("/sign", async (req, res) => {
   }
 });
 
-//로그인
-router.get("/sign", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    const decryptPwd = crypt.decrypt(user.password);
-    console.log(decryptPwd);
-
-    if (!user || password !== decryptPwd) {
-      res.status(400).json({
-        errorMessage: "사용자가 존재하지 않거나, 사용자의 password와 입력받은 password가 일치하지 않습니다."
-      });
-      return;
-    }
-
-    const token = jwt.sign({ email: user.email }, `${SECRET_KEY}`, {
-      expiresIn: "12h"
-    });
-
-    res.cookie("authorization", `Bearer ${token}`);
-    return res.status(201).json({ message: "성공적으로 로그인 되었습니다." }).end();
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 //수정
 
 router.put("/sign", async (req, res) => {

@@ -2,13 +2,16 @@ const express = require("express");
 const db = require("../models");
 const Shoes = db.Shoes;
 const { Op } = require("sequelize");
+const authMiddleWare = require("../middlewares/need-signin.middleware");
 
 const router = express.Router();
 
 //상품 등록
-router.post("/products", async (req, res) => {
+router.post("/products", authMiddleWare, async (req, res) => {
   try {
     const { name, brand, price, status } = req.body;
+
+    const { userId } = res.locals.user;
 
     if (!name || !brand || !price || !status) {
       return res.status(400).json({ errormessage: "데이터 형식이 올바르지 않습니다." });
@@ -18,7 +21,8 @@ router.post("/products", async (req, res) => {
       name,
       brand,
       price,
-      status
+      status,
+      userId: userId
     });
 
     await newProduct.save();
