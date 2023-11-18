@@ -1,4 +1,5 @@
 "use strict";
+
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -9,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.Shoes, {
+        sourceKey: "userId",
+        foreignKey: "userId"
+      });
     }
   }
   User.init(
@@ -17,14 +22,22 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.STRING, //type: Sequelize.STRING 사용하면 에러
         allowNull: false,
+        autoIncrement: true
       },
-      password: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
     },
     {
       sequelize,
       timestamps: true,
       modelName: "User",
-      tableName: "users",
+      tableName: "users"
 
       // sequelize /* static init 메서드의 매개변수와 연결되는 옵션으로, db.sequelize 객체를 넣어야 한다. */,
       // timestamps: false /* true : 각각 레코드가 생성, 수정될 때의 시간이 자동으로 입력된다. */,
@@ -36,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
       // collate: "utf8_general_ci",
     }
   );
+
+  User.product;
 
   return User;
 };
