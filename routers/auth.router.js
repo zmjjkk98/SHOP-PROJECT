@@ -8,7 +8,6 @@ const crypt = new Cryptr("myTotallySecretKey");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
-const authMiddleWare = require("../middlewares/need-signin.middleware");
 const { SECRET_KEY } = process.env;
 
 //로그인
@@ -35,10 +34,6 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});
-
-router.get("/login", authMiddleWare, async (req, res) => {
-  res.json({ message: "로그인 성공" });
 });
 
 module.exports = router;
