@@ -4,16 +4,13 @@ const User = db.User;
 const { Op } = require("sequelize");
 const Cryptr = require("cryptr");
 const crypt = new Cryptr("myTotallySecretKey");
-const jwt = require("jsonwebtoken");
-const { SECRET_KEY } = process.env;
-const authMiddleWare = require("../middlewares/need-signin.middleware");
 
 const router = express.Router();
 
 //회원가입
 router.post("/sign", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, passwordCheck } = req.body;
 
     const exsistsUser = await User.findOne({
       where: { email }
@@ -25,6 +22,10 @@ router.post("/sign", async (req, res) => {
       });
     }
 
+    if (password !== passwordCheck) {
+      return res.status(400).json({ message: "비밀번호와 비밀번호 확인이일치 하지 않습니다." });
+    }
+
     const encryptPwd = crypt.encrypt(password);
 
     const user = await User.create({ email, password: encryptPwd });
@@ -32,7 +33,7 @@ router.post("/sign", async (req, res) => {
     res.status(201).json({
       success: true,
       message: "회원가입에 성공했습니다",
-      data: user
+      data: user.email
     });
   } catch (error) {
     console.log(error);
