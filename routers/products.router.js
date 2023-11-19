@@ -2,24 +2,27 @@ const express = require("express");
 const db = require("../models");
 const Shoes = db.Shoes;
 const { Op } = require("sequelize");
+const authMiddleWare = require("../middlewares/need-signin.middleware");
 
 const router = express.Router();
 
 //상품 등록
-router.post("/products", async (req, res) => {
+router.post("/products", authMiddleWare, async (req, res) => {
   try {
-    const { productId, name, brand, price, status } = req.body;
+    const { name, brand, price, status } = req.body;
 
-    if (!productId || !name || !brand || !price || !status) {
+    const { userId } = res.locals.user;
+
+    if (!name || !brand || !price || !status) {
       return res.status(400).json({ errormessage: "데이터 형식이 올바르지 않습니다." });
     }
 
     const newProduct = new Shoes({
-      productId,
       name,
       brand,
       price,
-      status
+      status,
+      userId: userId
     });
 
     await newProduct.save();
@@ -61,7 +64,7 @@ router.get("/products/:productId", async (req, res) => {
 });
 
 //상품 업데이트
-router.put("/products/:productId", async (req, res) => {
+router.put("/products/:productId", authMiddleWare, async (req, res) => {
   try {
     const productId = req.params.productId;
     const product = await Shoes.findOne({
@@ -87,7 +90,7 @@ router.put("/products/:productId", async (req, res) => {
   }
 });
 
-router.delete("/products/:productId", async (req, res) => {
+router.delete("/products/:productId", authMiddleWare, async (req, res) => {
   try {
     const productId = req.params.productId;
     const product = await Shoes.findOne({
@@ -95,6 +98,7 @@ router.delete("/products/:productId", async (req, res) => {
     });
 
     await product.destroy();
+    //await Shoes.truncate()  모든행 삭제
     res.status(200).json({ message: "상품 삭제 완료" });
   } catch (error) {
     res.status(500).json({ errormessage: "예기치 못한 문제가 발생했습니다." });

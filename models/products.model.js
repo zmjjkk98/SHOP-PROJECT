@@ -1,4 +1,5 @@
 "use strict";
+
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Shoes extends Model {
@@ -9,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.User, {
+        targetKey: "userId",
+        foreignKey: "userId"
+      });
     }
   }
   Shoes.init(
@@ -17,30 +22,31 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: true
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       brand: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       price: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false
       },
       status: {
         type: DataTypes.STRING,
         allowNull: false,
-        default: "FOR_SALE",
-      },
+        default: "FOR_SALE"
+      }
     },
     {
       sequelize,
       modelName: "Shoes",
       tableName: "shoes",
+      timestamps: true
     }
   );
   return Shoes;

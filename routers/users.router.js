@@ -2,52 +2,123 @@ const express = require("express");
 const db = require("../models");
 const User = db.User;
 const { Op } = require("sequelize");
-
-const jwt = require("jsonwebtoken");
+const Cryptr = require("cryptr");
+const crypt = new Cryptr("myTotallySecretKey");
 
 const router = express.Router();
-const authMiddleWare = require("../middlewares/need-signin.middleware");
 
 //회원가입
-router.post("/signup", async (req, res) => {
+router.post("/sign", async (req, res) => {
   try {
-    const { userId, password } = req.body;
-    const user = await User.create({ userId: userId, password: password });
+    const { email, password, passwordCheck } = req.body;
+
+    const exsistsUser = await User.findOne({
+      where: { email }
+    });
+
+    const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+    function emailValiChk(email) {
+      if (pattern.test(email) === false) {
+        return res.status(400).json({ message: "이메일 형식이 맞지 않습니다." });
+      }
+    }
+
+    emailValiChk(email);
+
+    if (exsistsUser) {
+      return res.status(405).json({
+        message: "이미 사용중인 이메일 입니다."
+      });
+    }
+
+    if (password !== passwordCheck) {
+      return res.status(400).json({ message: "비밀번호와 비밀번호 확인이일치 하지 않습니다." });
+    } else if (password.length < 6) {
+      return res.status(400).json({ message: "비밀번호는 6글자 이상입력해주세요" });
+    }
+
+    const encryptPwd = crypt.encrypt(password);
+
+    const user = await User.create({ email, password: encryptPwd });
 
     res.status(201).json({
       success: true,
       message: "회원가입에 성공했습니다",
-      data: user,
+      data: user.email
     });
   } catch (error) {
     console.log(error);
   }
 });
 
-//로그인
-router.post("/login", async (req, res) => {
-  const { userId, password } = req.body;
+//수정
 
-  const user = await User.findOne({ userId });
+router.put("/sign", async (req, res) => {
+  try {
+    const { email, password, newPassword } = req.body;
+    if (!email || !password || !newPassword) {
+      return res.status(401).json({
+        message: "데이터형식이 올바르지 않습니다."
+      });
+    }
+    const user = await User.findOne({ email });
+    const decryptPwd = crypt.decrypt(user.password);
 
-  if (!user || password !== user.password) {
+    if (decryptPwd === password) {
+      const newUser = new User({
+        email,
+        password: newPassword
+      });
+
+      await newUser.save();
+
+      return res.status(200).json({
+        massage: "회원정보를 수정 하였습니다."
+      });
+    } else {
+      res.status(402).json({
+        massage: "비밀번호가 맞지 않습니다."
+      });
+    }
+  } catch {
     res.status(400).json({
-      errorMessage:
-        "사용자가 존재하지 않거나, 사용자의 password와 입력받은 password가 일치하지 않습니다.",
+      massage: "회원정보를 수정 할 수 없습니다."
     });
-    return;
   }
-
-  const token = jwt.sign({ userId: user.userId }, "sparta-secret-key", {
-    expiresIn: "12h",
-  });
-
-  res.cookie("authorization", `Bearer ${token}`);
-  return res.status(201).end();
 });
 
-router.get("/login", authMiddleWare, async (req, res) => {
-  res.json({ message: "로그인 성공" });
+//삭제
+
+router.delete("/sign", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(401).json({
+        message: "데이터형식이 올바르지 않습니다."
+      });
+    }
+
+    const user = await User.findOne({ email });
+    const decryptPwd = crypt.decrypt(user.password);
+
+    if (decryptPwd === password) {
+      await user.destroy();
+      return res.status(200).json({
+        massage: "회원 탈퇴 완료"
+      });
+    } else {
+      res.status(402).json({
+        massage: "비밀번호가 맞지 않습니다."
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      massage: "회원정보를 수정 할 수 없습니다."
+    });
+  }
 });
 
 module.exports = router;
