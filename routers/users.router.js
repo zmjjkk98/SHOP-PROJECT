@@ -16,6 +16,16 @@ router.post("/sign", async (req, res) => {
       where: { email }
     });
 
+    const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+    function emailValiChk(email) {
+      if (pattern.test(email) === false) {
+        return res.status(400).json({ message: "이메일 형식이 맞지 않습니다." });
+      }
+    }
+
+    emailValiChk(email);
+
     if (exsistsUser) {
       return res.status(405).json({
         message: "이미 사용중인 이메일 입니다."
@@ -24,6 +34,8 @@ router.post("/sign", async (req, res) => {
 
     if (password !== passwordCheck) {
       return res.status(400).json({ message: "비밀번호와 비밀번호 확인이일치 하지 않습니다." });
+    } else if (password.length < 6) {
+      return res.status(400).json({ message: "비밀번호는 6글자 이상입력해주세요" });
     }
 
     const encryptPwd = crypt.encrypt(password);
