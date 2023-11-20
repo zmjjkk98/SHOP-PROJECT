@@ -90,6 +90,7 @@ router.put("/products/:productId", authMiddleWare, async (req, res) => {
   }
 });
 
+//상품 삭제
 router.delete("/products/:productId", authMiddleWare, async (req, res) => {
   try {
     const productId = req.params.productId;
