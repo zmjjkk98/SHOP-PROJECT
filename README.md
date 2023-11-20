@@ -2,19 +2,23 @@
 
 # 환경 변수
 
-MYSQL_USERNAME 
-MYSQL_PASSWORD 
-MYSQL_DATABASE 
+MYSQL_USERNAME
+
+MYSQL_PASSWORD
+
+MYSQL_DATABASE
+
 MYSQL_HOST
+
 SECRET_KEY 
 
 
-API명세서
+# API명세서
 https://docs.google.com/spreadsheets/d/1i-sFWhI17blxNwCTZaP3Ao13jcC1k51CrOcNhZ0AWiQ/edit?usp=sharing
 
 엑셀 사용이 미숙해서 앞에 category, description, method, url만 작성햇습니다.
 
-ERD
+# ERD
 https://www.erdcloud.com/d/GeFeNXdTFYRLLxccY
 
 # 암호화 방식
