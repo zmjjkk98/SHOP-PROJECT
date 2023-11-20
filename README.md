@@ -1,8 +1,9 @@
 # SHOP-PROJECT
 
 # 환경 변수
-Q .env 파일에 어떤 환경변수가 추가되어야 하는지 작성합니다.
-A DB(mysql)관련 정보와 jwt secret_key와 password 암호화 할때 salt
+Q. .env 파일에 어떤 환경변수가 추가되어야 하는지 작성합니다.
+
+A. DB(mysql)관련 정보와 jwt secret_key와 password 암호화 할때 salt
 
 MYSQL_USERNAME
 
