@@ -1,5 +1,14 @@
 # SHOP-PROJECT
 
+# 환경 변수
+
+MYSQL_USERNAME 
+MYSQL_PASSWORD 
+MYSQL_DATABASE 
+MYSQL_HOST
+SECRET_KEY 
+
+
 API명세서
 https://docs.google.com/spreadsheets/d/1i-sFWhI17blxNwCTZaP3Ao13jcC1k51CrOcNhZ0AWiQ/edit?usp=sharing
 
